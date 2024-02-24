@@ -1,0 +1,25 @@
+{
+    "models": [
+        {
+            "name": "Woman",
+            "probability": 100.0,
+            "path": "woman/",
+            "gltf": "womain.gltf",
+            "traits": [
+                {
+                    "name": "Hats",
+                    "path": "hats/",
+                    "traits": [
+                        {
+                            "name": "Cone Hat",
+                            "path": "cone_hat/",
+                            "gltf": "cone_hat.gltf",
+                            "probability": 100.0,
+                            "bone": "mixamorigHeadTop_End"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
