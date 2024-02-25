@@ -12,7 +12,6 @@ pub struct ModelTraitConfig {
 #[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct ModelTraitGroupConfig {
     pub name: String,
-    pub path: String,
     pub traits: Vec<ModelTraitConfig>,
 }
 

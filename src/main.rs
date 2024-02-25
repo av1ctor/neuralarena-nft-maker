@@ -1,26 +1,62 @@
 mod config;
 mod importer;
 mod generator;
+mod exporter;
 mod model;
 
-use crate::{generator::Generator, importer::ModelImporter};
+use crate::{exporter::ModelExporter, generator::Generator, importer::ModelImporter};
 
 const TOTAL_NUM_NFTS: usize = 10;
 
+fn read_gltf_file(
+    path: &String
+) -> Result<String, String> {
+    std::fs::read_to_string(format!("models/{}", path))
+        .map_err(|e| format!("Error {} reading {}", e.to_string(), &path))
+}
+
+fn write_gltf_file(
+    path: &String,
+    text: &String
+) -> Result<(), String> {
+    std::fs::write(format!("output/models/{}", path), text)
+        .map_err(|e| format!("Error {} writing {}", e.to_string(), &path))
+}
+
 fn main() {
-    let cfg = match ModelImporter::from_file("models/config.json") {
-        Err(msg) => panic!("{}", msg),
+    let text = match std::fs::read_to_string("models/config.json") {
+        Ok(res) => res,
+        Err(msg) => {
+            println!("ERROR: config.json could not be loaded: {}", msg);
+            return;
+        },
+    };
+
+    let imp = match ModelImporter::from_str(&text) {
+        Err(msg) => {
+            println!("ERROR: ModelImporter failed: {}", msg);
+            return;
+        },
         Ok(res) => res
     };
 
     let mut gen = Generator::new(1234);
 
-    let nfts = gen.generate(&cfg.models, TOTAL_NUM_NFTS)
-        .expect("Generator failed");
+    let models = match gen.generate(&imp.models, TOTAL_NUM_NFTS) {
+        Err(msg) => {
+            println!("ERROR: Generator failed: {}", msg);
+            return;
+        },
+        Ok(res) => res
+    };
 
-    
+    let exp = ModelExporter{
+        read_gltf_file: &read_gltf_file, 
+        write_gltf_file: &write_gltf_file
+    };
 
-    let json = serde_json::to_string(&nfts)
-        .expect("json::to_string failed");
-    println!("{}", json);
+    if let Err(msg) = exp.export(&models) {
+        println!("ERROR: ModelExporter failed: {}", msg);
+        return;
+    }
 }
