@@ -50,9 +50,11 @@ impl<'a> ModelExporter<'_> {
                 };
 
                 let buffers_len = {
-                    let buffers = gltf.get_mut("buffers").expect("buffers[] not found").as_array_mut().unwrap();
+                    let buffers = gltf.get_mut("buffers")
+                        .expect("buffers[] not found").as_array_mut().unwrap();
                     let len = buffers.len();
-                    let trait_buffers = trait_gltf.get("buffers").expect("buffers[] not found").as_array().unwrap();
+                    let trait_buffers = trait_gltf.get("buffers")
+                        .expect("buffers[] not found").as_array().unwrap();
                     for buff in trait_buffers {
                         buffers.push(buff.clone());
                     }
@@ -69,12 +71,15 @@ impl<'a> ModelExporter<'_> {
                 };
     
                 let buffer_views_len = {
-                    let buffer_views = gltf.get_mut("bufferViews").expect("bufferViews[] not found").as_array_mut().unwrap();
+                    let buffer_views = gltf.get_mut("bufferViews")
+                        .expect("bufferViews[] not found").as_array_mut().unwrap();
                     let len = buffer_views.len();
                     
-                    let trait_buffer_views = trait_gltf.get_mut("bufferViews").expect("bufferViews[] not found").as_array_mut().unwrap();
+                    let trait_buffer_views = trait_gltf.get_mut("bufferViews")
+                        .expect("bufferViews[] not found").as_array_mut().unwrap();
                     for view in trait_buffer_views {
-                        view["buffer"] = (view["buffer"].as_u64().unwrap() as usize + buffers_len).into();
+                        view["buffer"] = 
+                            (view["buffer"].as_u64().unwrap() as usize + buffers_len).into();
                         buffer_views.push(view.clone());
                     }
 
@@ -82,12 +87,15 @@ impl<'a> ModelExporter<'_> {
                 };
 
                 let accessors_len = {
-                    let accessors = gltf.get_mut("accessors").expect("accessors[] not found").as_array_mut().unwrap();
+                    let accessors = gltf.get_mut("accessors")
+                        .expect("accessors[] not found").as_array_mut().unwrap();
                     let len = accessors.len();
                     
-                    let trait_accessors = trait_gltf.get_mut("accessors").expect("accessors[] not found").as_array_mut().unwrap();
+                    let trait_accessors = trait_gltf.get_mut("accessors")
+                        .expect("accessors[] not found").as_array_mut().unwrap();
                     for acc in trait_accessors {
-                        acc["bufferView"] = (acc["bufferView"].as_u64().unwrap() as usize + buffer_views_len).into();
+                        acc["bufferView"] = 
+                            (acc["bufferView"].as_u64().unwrap() as usize + buffer_views_len).into();
                         accessors.push(acc.clone());
                     }
 
@@ -95,14 +103,19 @@ impl<'a> ModelExporter<'_> {
                 };
     
                 let meshes_len = {
-                    let meshes = gltf.get_mut("meshes").expect("meshes[] not found").as_array_mut().unwrap();
+                    let meshes = gltf.get_mut("meshes")
+                        .expect("meshes[] not found").as_array_mut().unwrap();
                     let len = meshes.len();
                     
-                    let trait_meshes = trait_gltf.get_mut("meshes").expect("meshes[] not found").as_array_mut().unwrap();
+                    let trait_meshes = trait_gltf.get_mut("meshes")
+                        .expect("meshes[] not found").as_array_mut().unwrap();
                     for mesh in trait_meshes {
-                        let mesh_primitives = mesh.get_mut("primitives").expect("primitives[] not found").as_array_mut().unwrap();
+                        let mesh_primitives = mesh.get_mut("primitives")
+                            .expect("primitives[] not found").as_array_mut().unwrap();
                         for prim in mesh_primitives {
-                            prim["indices"] = (prim["indices"].as_u64().unwrap() as usize + accessors_len).into();
+                            prim["indices"] = 
+                                (prim["indices"].as_u64().unwrap() as usize + accessors_len).into();
+                            
                             let prim_attributes = prim["attributes"].as_object_mut().unwrap();
                             for attr in &mut prim_attributes.values_mut() {
                                 *attr = (attr.as_u64().unwrap() as usize + accessors_len).into();
@@ -115,13 +128,16 @@ impl<'a> ModelExporter<'_> {
                 };
 
                 let _nodes_len = {
-                    let nodes = gltf.get_mut("nodes").expect("nodes[] not found").as_array_mut().unwrap();
+                    let nodes = gltf.get_mut("nodes")
+                        .expect("nodes[] not found").as_array_mut().unwrap();
                     let len = nodes.len();
                     
                     let mut nodes_to_link = vec![];
-                    let trait_nodes = trait_gltf.get_mut("nodes").expect("nodes[] not found").as_array_mut().unwrap();
+                    let trait_nodes = trait_gltf.get_mut("nodes")
+                        .expect("nodes[] not found").as_array_mut().unwrap();
                     for node in trait_nodes {
-                        node["mesh"] = (node["mesh"].as_u64().unwrap() as usize + meshes_len).into();
+                        node["mesh"] = 
+                            (node["mesh"].as_u64().unwrap() as usize + meshes_len).into();
                         nodes_to_link.push(nodes.len());
                         nodes.push(node.clone());
                     }
@@ -140,7 +156,8 @@ impl<'a> ModelExporter<'_> {
                 };
 
                 let images_len = {
-                    let images = gltf.get_mut("images").expect("images[] not found").as_array_mut().unwrap();
+                    let images = gltf.get_mut("images")
+                        .expect("images[] not found").as_array_mut().unwrap();
                     let len = images.len();
                     
                     if let Some(trait_images) = trait_gltf.get("images") {
@@ -161,12 +178,14 @@ impl<'a> ModelExporter<'_> {
                 };
 
                 let textures_len = {
-                    let textures = gltf.get_mut("textures").expect("textures[] not found").as_array_mut().unwrap();
+                    let textures = gltf.get_mut("textures")
+                        .expect("textures[] not found").as_array_mut().unwrap();
                     let len = textures.len();
                     
                     if let Some(trait_textures) = trait_gltf.get_mut("textures") {
                         for tex in trait_textures.as_array_mut().unwrap() {
-                            tex["source"] = (tex["source"].as_u64().unwrap() as usize + images_len).into();
+                            tex["source"] = 
+                                (tex["source"].as_u64().unwrap() as usize + images_len).into();
                             textures.push(tex.clone());
                         }
                     }
@@ -175,18 +194,21 @@ impl<'a> ModelExporter<'_> {
                 };
 
                 let _materials_len = {
-                    let materials = gltf.get_mut("materials").expect("materials[] not found").as_array_mut().unwrap();
+                    let materials = gltf.get_mut("materials")
+                        .expect("materials[] not found").as_array_mut().unwrap();
                     let len = materials.len();
                     
                     if let Some(trait_materials) = trait_gltf.get_mut("materials") {
                         for material in trait_materials.as_array_mut().unwrap() {
-                            if let Some(normal_tex) = material.get_mut("normalTexture") {
-                                normal_tex["index"] = (normal_tex["index"].as_u64().unwrap() as usize + textures_len).into();
+                            if let Some(tex) = material.get_mut("normalTexture") {
+                                tex["index"] = 
+                                    (tex["index"].as_u64().unwrap() as usize + textures_len).into();
                             }
 
-                            if let Some(pbr_metallic_roughness) = material.get_mut("pbrMetallicRoughness") {
-                                if let Some(base_color_tex) = pbr_metallic_roughness.get_mut("baseColorTexture") {
-                                    base_color_tex["index"] = (base_color_tex["index"].as_u64().unwrap() as usize + textures_len).into();
+                            if let Some(pbr) = material.get_mut("pbrMetallicRoughness") {
+                                if let Some(tex) = pbr.get_mut("baseColorTexture") {
+                                    tex["index"] = 
+                                        (tex["index"].as_u64().unwrap() as usize + textures_len).into();
                                 }
                             }
                             
