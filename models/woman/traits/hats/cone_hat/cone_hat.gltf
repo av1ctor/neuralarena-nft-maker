@@ -3,6 +3,10 @@
 		"generator":"Khronos glTF Blender I/O v4.0.44",
 		"version":"2.0"
 	},
+	"extensionsUsed":[
+		"KHR_materials_specular",
+		"KHR_materials_ior"
+	],
 	"scene":0,
 	"scenes":[
 		{
@@ -17,15 +21,43 @@
 			"mesh":0,
 			"name":"Cone",
 			"scale":[
-				0.15694259107112885,
-				0.21745258569717407,
-				0.17699193954467773
+				15.000000953674316,
+				14.99999713897705,
+				14.999998092651367
 			],
 			"translation":[
-				0.005433280020952225,
-				2.1653361320495605,
-				-0.02655060589313507
+				2.3328702449798584,
+				108.3245620727539,
+				-1.7704012393951416
 			]
+		}
+	],
+	"materials":[
+		{
+			"doubleSided":true,
+			"extensions":{
+				"KHR_materials_specular":{
+					"specularColorFactor":[
+						2.0,
+						2.0,
+						2.0
+					]
+				},
+				"KHR_materials_ior":{
+					"ior":1.4500000476837158
+				}
+			},
+			"name":"Material.001",
+			"pbrMetallicRoughness":{
+				"baseColorFactor":[
+					0.8000074625015259,
+					0.03278621658682823,
+					0.12482614070177078,
+					1
+				],
+				"metallicFactor":0.6424870491027832,
+				"roughnessFactor":0.5
+			}
 		}
 	],
 	"meshes":[
@@ -38,7 +70,8 @@
 						"NORMAL":1,
 						"TEXCOORD_0":2
 					},
-					"indices":3
+					"indices":3,
+					"material":0
 				}
 			]
 		}

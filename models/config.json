@@ -5,6 +5,13 @@
             "probability": 100.0,
             "path": "woman/",
             "gltf": "woman.gltf",
+            "armature": {
+                "position": {
+                    "x": 2.3075,
+                    "y": 100.52,
+                    "z": 1.2247
+                }
+            },
             "traits": [
                 {
                     "name": "Hats",

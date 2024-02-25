@@ -16,11 +16,24 @@ pub struct ModelTraitGroupConfig {
 }
 
 #[derive(Clone, Default, Debug, Serialize, Deserialize)]
+pub struct Vector3 {
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
+}
+
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
+pub struct ModelArmature {
+    pub position: Vector3
+}
+
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct ModelConfig {
     pub name: String,
     pub path: String,
     pub probability: f32,
     pub gltf: String,
+    pub armature: ModelArmature,
     pub traits: Vec<ModelTraitGroupConfig>,
 }
 

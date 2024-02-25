@@ -102,59 +102,6 @@ impl<'a> ModelExporter<'_> {
                     len
                 };
     
-                let meshes_len = {
-                    let meshes = gltf.get_mut("meshes")
-                        .expect("meshes[] not found").as_array_mut().unwrap();
-                    let len = meshes.len();
-                    
-                    let trait_meshes = trait_gltf.get_mut("meshes")
-                        .expect("meshes[] not found").as_array_mut().unwrap();
-                    for mesh in trait_meshes {
-                        let mesh_primitives = mesh.get_mut("primitives")
-                            .expect("primitives[] not found").as_array_mut().unwrap();
-                        for prim in mesh_primitives {
-                            prim["indices"] = 
-                                (prim["indices"].as_u64().unwrap() as usize + accessors_len).into();
-                            
-                            let prim_attributes = prim["attributes"].as_object_mut().unwrap();
-                            for attr in &mut prim_attributes.values_mut() {
-                                *attr = (attr.as_u64().unwrap() as usize + accessors_len).into();
-                            }
-                        }
-                        meshes.push(mesh.clone());
-                    }
-
-                    len
-                };
-
-                let _nodes_len = {
-                    let nodes = gltf.get_mut("nodes")
-                        .expect("nodes[] not found").as_array_mut().unwrap();
-                    let len = nodes.len();
-                    
-                    let mut nodes_to_link = vec![];
-                    let trait_nodes = trait_gltf.get_mut("nodes")
-                        .expect("nodes[] not found").as_array_mut().unwrap();
-                    for node in trait_nodes {
-                        node["mesh"] = 
-                            (node["mesh"].as_u64().unwrap() as usize + meshes_len).into();
-                        nodes_to_link.push(nodes.len());
-                        nodes.push(node.clone());
-                    }
-                    
-                    let bone_node = nodes.iter_mut().find(|n| n["name"] == tr4it.cfg.bone).unwrap();
-                    for n in nodes_to_link {
-                        if let Some(children) = bone_node.get_mut("children") {
-                            children.as_array_mut().unwrap().push(n.into())
-                        }
-                        else {
-                            bone_node["children"] = (vec![n]).into();
-                        }
-                    }
-                    
-                    len
-                };
-
                 let images_len = {
                     let images = gltf.get_mut("images")
                         .expect("images[] not found").as_array_mut().unwrap();
@@ -193,7 +140,7 @@ impl<'a> ModelExporter<'_> {
                     len
                 };
 
-                let _materials_len = {
+                let materials_len = {
                     let materials = gltf.get_mut("materials")
                         .expect("materials[] not found").as_array_mut().unwrap();
                     let len = materials.len();
@@ -218,6 +165,73 @@ impl<'a> ModelExporter<'_> {
 
                     len
                 };
+
+                let meshes_len = {
+                    let meshes = gltf.get_mut("meshes")
+                        .expect("meshes[] not found").as_array_mut().unwrap();
+                    let len = meshes.len();
+                    
+                    let trait_meshes = trait_gltf.get_mut("meshes")
+                        .expect("meshes[] not found").as_array_mut().unwrap();
+                    for mesh in trait_meshes {
+                        let mesh_primitives = mesh.get_mut("primitives")
+                            .expect("primitives[] not found").as_array_mut().unwrap();
+                        for prim in mesh_primitives {
+                            prim["indices"] = 
+                                (prim["indices"].as_u64().unwrap() as usize + accessors_len).into();
+                            prim["material"] = 
+                                (prim["material"].as_u64().unwrap() as usize + materials_len).into();
+                            
+                            let prim_attributes = prim["attributes"].as_object_mut().unwrap();
+                            for attr in &mut prim_attributes.values_mut() {
+                                *attr = (attr.as_u64().unwrap() as usize + accessors_len).into();
+                            }
+                        }
+                        meshes.push(mesh.clone());
+                    }
+
+                    len
+                };
+
+                let _nodes_len = {
+                    let nodes = gltf.get_mut("nodes")
+                        .expect("nodes[] not found").as_array_mut().unwrap();
+                    let len = nodes.len();
+                    
+                    let mut nodes_to_link = vec![];
+                    let trait_nodes = trait_gltf.get_mut("nodes")
+                        .expect("nodes[] not found").as_array_mut().unwrap();
+                    for node in trait_nodes {
+                        node["mesh"] = 
+                            (node["mesh"].as_u64().unwrap() as usize + meshes_len).into();
+                        nodes_to_link.push(nodes.len());
+
+                        let mesh_translation = node.get_mut("translation")
+                            .expect("translation not found").as_array_mut().unwrap();
+                        mesh_translation[0] = 
+                            (mesh_translation[0].as_f64().unwrap() - model.cfg.armature.position.x).into();
+                        mesh_translation[1] = 
+                            (mesh_translation[1].as_f64().unwrap() - model.cfg.armature.position.y).into();
+                        mesh_translation[2] = 
+                            (mesh_translation[2].as_f64().unwrap() - model.cfg.armature.position.z).into();
+                        
+                        nodes.push(node.clone());
+                    }
+                    
+                    let bone_node = nodes.iter_mut().find(|n| n["name"] == tr4it.cfg.bone).unwrap();
+                    for n in nodes_to_link {
+                        if let Some(children) = bone_node.get_mut("children") {
+                            children.as_array_mut().unwrap().push(n.into())
+                        }
+                        else {
+                            bone_node["children"] = (vec![n]).into();
+                        }
+                    }
+                    
+                    len
+                };
+
+
     
             }
 
