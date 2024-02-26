@@ -20,7 +20,21 @@
                             "name": "Cone Hat",
                             "path": "hats/cone_hat/",
                             "gltf": "cone_hat.gltf",
-                            "probability": 100.0,
+                            "probability": 33.0,
+                            "bone": "mixamorigHeadTop_End"
+                        },
+                        {
+                            "name": "Donut Hat",
+                            "path": "hats/donut_hat/",
+                            "gltf": "donut_hat.gltf",
+                            "probability": 33.0,
+                            "bone": "mixamorigHeadTop_End"
+                        },
+                        {
+                            "name": "Cylinder Hat",
+                            "path": "hats/cylinder_hat/",
+                            "gltf": "cylinder_hat.gltf",
+                            "probability": 33.0,
                             "bone": "mixamorigHeadTop_End"
                         }
                     ]

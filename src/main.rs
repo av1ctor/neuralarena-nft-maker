@@ -4,9 +4,21 @@ mod generator;
 mod exporter;
 mod model;
 
-use crate::{exporter::ModelExporter, generator::Generator, importer::ModelImporter};
+use crate::{
+    exporter::{ModelExporter, PropsExporter}, 
+    generator::Generator, 
+    importer::ModelImporter
+};
 
 const TOTAL_NUM_NFTS: usize = 10;
+
+fn write_props_file(
+    path: &String,
+    text: &String
+) -> Result<(), String> {
+    std::fs::write(format!("output/props/{}", path), text)
+        .map_err(|e| format!("Error {} writing {}", e.to_string(), &path))
+}
 
 fn read_gltf_file(
     path: &String
@@ -49,6 +61,15 @@ fn main() {
         },
         Ok(res) => res
     };
+
+    let exp = PropsExporter{
+        write_props_file: &write_props_file
+    };
+
+    if let Err(msg) = exp.export(&models) {
+        println!("ERROR: PropsExporter failed: {}", msg);
+        return;
+    }
 
     let exp = ModelExporter{
         read_gltf_file: &read_gltf_file, 
