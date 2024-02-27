@@ -4,13 +4,15 @@ mod generator;
 mod exporter;
 mod model;
 
+use exporter::ImageExporter;
+
 use crate::{
     exporter::{ModelExporter, PropsExporter}, 
     generator::Generator, 
     importer::ModelImporter
 };
 
-const TOTAL_NUM_NFTS: usize = 10;
+const TOTAL_NUM_NFTS: usize = 5;
 
 fn write_props_file(
     path: &String,
@@ -74,6 +76,14 @@ fn main() {
     let exp = ModelExporter{
         read_gltf_file: &read_gltf_file, 
         write_gltf_file: &write_gltf_file
+    };
+
+    if let Err(msg) = exp.export(&models) {
+        println!("ERROR: ModelExporter failed: {}", msg);
+        return;
+    }
+
+    let exp = ImageExporter{
     };
 
     if let Err(msg) = exp.export(&models) {

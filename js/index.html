@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <style>
+      #canvas {
+        border: 2px solid #000;
+        width: 4096px;
+        height: 4096px;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="4096" height="4096">
+    </canvas>
+    <script type="module" src="/src/app.ts"></script>
+    <script>
+      window.onload = function() {window.app.init()};
+    </script>
+  </body>
+</html>
