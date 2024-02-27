@@ -21,6 +21,11 @@ enum RpcCommand {
     },
 }
 
+enum UserEvent {
+    Shutdown,
+    Eval(String),
+}
+
 pub struct ImageExporter {
 }
 
@@ -32,7 +37,7 @@ impl ImageExporter {
 
         let len_models = models.len();
 
-        let event_loop = EventLoopBuilder::<String>::with_user_event().build();
+        let event_loop = EventLoopBuilder::<UserEvent>::with_user_event().build();
 
         let window = WindowBuilder::new()
             .with_inner_size(PhysicalSize::new(512 + 20, 512 + 24))
@@ -45,7 +50,7 @@ impl ImageExporter {
             match event {
                 PageLoadEvent::Finished => {
                     let gltf = Self::load_gltf(0);
-                    _ = proxy1.send_event(format!("window.app.begin('{}');", gltf).into());
+                    _ = proxy1.send_event(UserEvent::Eval(format!("window.app.begin('{}');", gltf)));
                 },
                 _ => ()
             }
@@ -58,7 +63,10 @@ impl ImageExporter {
                     Self::save_jpeg(num, &image);
                     if num+1 < len_models {
                         let gltf = Self::load_gltf(num+1);
-                        _ = proxy2.send_event(format!("window.app.next('{}');", gltf).into());
+                        _ = proxy2.send_event(UserEvent::Eval(format!("window.app.next('{}');", gltf)));
+                    }
+                    else {
+                        _ = proxy2.send_event(UserEvent::Shutdown);
                     }
                 },
             }
@@ -76,9 +84,15 @@ impl ImageExporter {
             *control_flow = ControlFlow::Wait;
 
             match event {
-                Event::UserEvent(script) => {
-                    //*control_flow = ControlFlow::Poll;
-                    _ = webview.evaluate_script(&script);
+                Event::UserEvent(e) => {
+                    match e {
+                        UserEvent::Shutdown => {
+                            *control_flow = ControlFlow::Exit;
+                        },
+                        UserEvent::Eval(script) => {
+                            _ = webview.evaluate_script(&script);
+                        },
+                    }                    
                 }
                 Event::WindowEvent { event: WindowEvent::CloseRequested, ..} => {
                     *control_flow = ControlFlow::Exit
