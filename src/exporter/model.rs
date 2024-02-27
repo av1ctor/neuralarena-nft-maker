@@ -2,14 +2,10 @@ use std::collections::HashMap;
 use serde_json::Value;
 use crate::model::Model;
 
-pub struct ModelExporter<'a> {
-    pub read_gltf_file: &'a dyn Fn(&String) -> Result<String, String>,
-    pub write_gltf_file: &'a dyn Fn(&String, &String) -> Result<(), String>,
-}
+pub struct ModelExporter;
 
-impl<'a> ModelExporter<'_> {
+impl ModelExporter {
     pub fn export(
-        &self,
         models: &Vec<Model>
     ) -> Result<(), String> {
         let mut gltf_cache = HashMap::<String, serde_json::Value>::new();
@@ -19,7 +15,7 @@ impl<'a> ModelExporter<'_> {
             let mut gltf = match gltf_cache.get(model_path) {
                 Some(res) => res.clone(),
                 None => {
-                    let text = (*self.read_gltf_file)(&model_path)?;
+                    let text = Self::read_gltf_file(&model_path)?;
                     let gltf: Value = match serde_json::from_str(&text) {
                         Ok(res) => res,
                         Err(msg) => return Err(msg.to_string()),
@@ -37,7 +33,7 @@ impl<'a> ModelExporter<'_> {
                 let mut trait_gltf = match gltf_cache.get(trait_full_path) {
                     Some(res) => res.clone(),
                     None => {
-                        let text = (*self.read_gltf_file)(trait_full_path)?;
+                        let text = Self::read_gltf_file(trait_full_path)?;
                         let gltf: Value = match serde_json::from_str(&text) {
                             Ok(res) => res,
                             Err(msg) => return Err(msg.to_string()),
@@ -236,9 +232,24 @@ impl<'a> ModelExporter<'_> {
             }
 
             let path = &format!("{:0>5}.gltf", model.num);
-            (*self.write_gltf_file)(path, &gltf.to_string())?;
+            Self::write_gltf_file(path, &gltf.to_string())?;
         }
         
         Ok(())
+    }
+
+    fn read_gltf_file(
+        path: &String
+    ) -> Result<String, String> {
+        std::fs::read_to_string(format!("models/{}", path))
+            .map_err(|e| format!("Error {} reading {}", e.to_string(), &path))
+    }
+    
+    fn write_gltf_file(
+        path: &String,
+        text: &String
+    ) -> Result<(), String> {
+        std::fs::write(format!("output/models/{}", path), text)
+            .map_err(|e| format!("Error {} writing {}", e.to_string(), &path))
     }
 }

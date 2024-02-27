@@ -26,12 +26,10 @@ enum UserEvent {
     Eval(String),
 }
 
-pub struct ImageExporter {
-}
+pub struct ImageExporter;
 
 impl ImageExporter {
     pub fn export(
-        &self,
         models: &Vec<Model>
     ) -> Result<(), String> {
 

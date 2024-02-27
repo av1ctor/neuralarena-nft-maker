@@ -7,13 +7,10 @@ struct Prop {
     traits: Vec<String>,
 }
 
-pub struct PropsExporter<'a> {
-    pub write_props_file: &'a dyn Fn(&String, &String) -> Result<(), String>,
-}
+pub struct PropsExporter;
 
-impl<'a> PropsExporter<'_> {
+impl PropsExporter {
     pub fn export(
-        &self,
         models: &Vec<Model>
     ) -> Result<(), String> {
         for model in models {
@@ -25,10 +22,18 @@ impl<'a> PropsExporter<'_> {
             for tr4it in &model.traits {
                 prop.traits.push(tr4it.name.clone());
             }
-            
-            (*self.write_props_file)(path, &serde_json::to_string(&prop).unwrap())?;
+
+            Self::write_props_file(path, &serde_json::to_string(&prop).unwrap())?;
         }
         
         Ok(())
+    }
+    
+    fn write_props_file(
+        path: &String,
+        text: &String
+    ) -> Result<(), String> {
+        std::fs::write(format!("output/props/{}", path), text)
+            .map_err(|e| format!("Error {} writing {}", e.to_string(), &path))
     }
 }
