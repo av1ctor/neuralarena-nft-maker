@@ -64,6 +64,7 @@ fn main() {
         Ok(res) => res
     };
 
+    println!("Exporting models...");
     let exp = PropsExporter{
         write_props_file: &write_props_file
     };
@@ -73,6 +74,7 @@ fn main() {
         return;
     }
 
+    println!("Exporting props...");
     let exp = ModelExporter{
         read_gltf_file: &read_gltf_file, 
         write_gltf_file: &write_gltf_file
@@ -83,6 +85,7 @@ fn main() {
         return;
     }
 
+    println!("Exporting images...");
     let exp = ImageExporter{
     };
 
