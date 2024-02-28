@@ -30,6 +30,9 @@ pub struct ModelArmature {
 #[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct ModelConfig {
     pub name: String,
+    pub xp: usize,
+    pub height: f32,
+    pub radius: f32,
     pub path: String,
     pub probability: f32,
     pub gltf: String,

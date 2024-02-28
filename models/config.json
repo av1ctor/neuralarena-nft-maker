@@ -2,6 +2,9 @@
     "models": [
         {
             "name": "Woman",
+            "xp": 1,
+            "height": 1.8,
+            "radius": 0.8,
             "probability": 100.0,
             "path": "woman/",
             "gltf": "woman.gltf",

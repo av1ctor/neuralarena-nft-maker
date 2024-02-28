@@ -4,6 +4,9 @@ use crate::model::Model;
 #[derive(Serialize)]
 struct Prop {
     model: String,
+    xp: usize,
+    height: f32,
+    radius: f32,
     traits: Vec<String>,
 }
 
@@ -16,6 +19,9 @@ impl PropsExporter {
         for model in models {
             let mut prop = Prop {
                 model: model.name.clone(),
+                xp: model.cfg.xp,
+                height: model.cfg.height,
+                radius: model.cfg.radius,
                 traits: vec![],
             };
             let path = &format!("{:0>5}.json", model.num);
