@@ -10,3 +10,4 @@ rand = "=0.8.5"
 wry = "0.37.0"
 tao = "0.26.0"
 base64 = "0.21.7"
+neuralarena-cdk = {version = "0.1.0", path = "../neuralarena-cdk", default-features = false, features = []}
