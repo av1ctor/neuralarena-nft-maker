@@ -12,12 +12,16 @@ impl PropsExporter {
         for model in models {
             let mut prop = Nas1Token {
                 model: model.name.clone(),
+                name: format!("Brains #{:0>5}", model.num),
                 xp: model.cfg.xp,
                 height: model.cfg.height,
                 radius: model.cfg.radius,
                 traits: vec![],
                 epsilon: 0.05,
-                hidden_layers: 1,
+                num_hidden_layers: 1,
+                hidden_layers_weights_size: vec![32],
+                image_url: "".to_string(),
+                model_url: "".to_string(),
                 steps_per_thought: 1000,
                 extra: HashMap::default(),
             };
