@@ -97,7 +97,7 @@ function add_lights() {
         state.scene.add( cube );
 
         const camera = new THREE.PerspectiveCamera(75.0, w / h, 0.1, 1000);
-        camera.position.set(0.0, 60.0, 60.0);
+        camera.position.set(0.0, 180.0, 60.0);
 
         function render() {
             cube.rotateX(0.01);
