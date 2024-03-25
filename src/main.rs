@@ -12,7 +12,7 @@ use crate::{
     importer::ModelImporter
 };
 
-const TOTAL_NUM_NFTS: usize = 5;
+const TOTAL_NUM_NFTS: usize = 6;
 
 fn main() {
     let text = match std::fs::read_to_string("models/config.json") {

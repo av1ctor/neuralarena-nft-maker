@@ -1,18 +1,18 @@
 {
     "models": [
         {
-            "name": "Woman",
+            "name": "Prisoner",
             "xp": 1,
             "height": 1.8,
             "radius": 0.8,
             "probability": 100.0,
-            "path": "woman/",
-            "gltf": "woman.gltf",
+            "path": "prisoner/",
+            "gltf": "prisoner.gltf",
             "armature": {
                 "position": {
-                    "x": 2.3075,
-                    "y": 100.52,
-                    "z": 1.2247
+                    "x": -26.8096,
+                    "y": 200.8184,
+                    "z": -2.0434
                 }
             },
             "traits": [
