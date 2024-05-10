@@ -1,5 +1,5 @@
 use rand::{distributions::{Distribution, WeightedIndex}, rngs::StdRng, SeedableRng};
-use crate::{config::ModelConfig, model::Model};
+use crate::{config::ModelConfig, model::{Model, ModelMaterial, ModelTrait}};
 
 pub struct Generator {
     pub rng: StdRng,
@@ -32,6 +32,18 @@ impl Generator {
         for num in 0..total {
             let model = &models[models_dist.sample(&mut self.rng)];
 
+            // sample a material
+            let materials_weights = model.materials.iter()
+                .map(|t| t.probability)
+                .collect::<Vec<_>>();
+
+            let materials_dist = WeightedIndex::new(&materials_weights).unwrap();
+
+            let material = ModelMaterial {
+                cfg: &model.materials[materials_dist.sample(&mut self.rng)],
+            };
+            
+            // sample a traits
             let mut traits = vec![];
             for trait_group in &model.traits {
                 let traits_weights = trait_group.traits.iter()
@@ -42,7 +54,7 @@ impl Generator {
                 
                 let tr4it = &trait_group.traits[traits_dist.sample(&mut self.rng)];
                 
-                traits.push(crate::model::ModelTrait { 
+                traits.push(ModelTrait { 
                     name: tr4it.name.clone(), 
                     cfg: tr4it
                 });
@@ -52,6 +64,7 @@ impl Generator {
                 num,
                 name: model.name.clone(),
                 cfg: model,
+                material,
                 traits,
             });
         }

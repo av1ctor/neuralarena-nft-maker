@@ -2,7 +2,6 @@
     "models": [
         {
             "name": "Prisoner",
-            "xp": 1,
             "height": 1.8,
             "radius": 0.8,
             "probability": 100.0,
@@ -15,6 +14,104 @@
                     "z": -2.0434
                 }
             },
+            "materials": [
+                {
+                    "probability": 50.0,
+                    "images": [
+                        {
+                            "mimeType": "image/png",
+                            "uri": "baseColor_1.png"
+                        },
+                        {
+                            "mimeType": "image/png",
+                            "uri": "normal_1.png"
+                        }
+                    ],
+                    "definition": {
+                        "name": "Prisoner_gray",
+                        "normalTexture": {
+                            "index": 1
+                        },
+                        "pbrMetallicRoughness": {
+                            "baseColorFactor": [
+                                0.800000011920929,
+                                0.800000011920929,
+                                0.800000011920929,
+                                1
+                            ],
+                            "baseColorTexture": {
+                                "index": 0
+                            },
+                            "metallicFactor": 0.5,
+                            "roughnessFactor": 0.5
+                        }
+                    }
+                },
+                {
+                    "probability": 25.0,
+                    "images": [
+                        {
+                            "mimeType": "image/png",
+                            "uri": "baseColor_2.png"
+                        },
+                        {
+                            "mimeType": "image/png",
+                            "uri": "normal_1.png"
+                        }
+                    ],
+                    "definition": {
+                        "name": "Prisoner_red",
+                        "normalTexture": {
+                            "index": 1
+                        },
+                        "pbrMetallicRoughness": {
+                            "baseColorFactor": [
+                                0.800000011920929,
+                                0.800000011920929,
+                                0.800000011920929,
+                                1
+                            ],
+                            "baseColorTexture": {
+                                "index": 0
+                            },
+                            "metallicFactor": 0.75,
+                            "roughnessFactor": 0.5
+                        }
+                    }
+                },
+                {
+                    "probability": 25.0,
+                    "images": [
+                        {
+                            "mimeType": "image/png",
+                            "uri": "baseColor_3.png"
+                        },
+                        {
+                            "mimeType": "image/png",
+                            "uri": "normal_1.png"
+                        }
+                    ],
+                    "definition": {
+                        "name": "Prisoner_dunno",
+                        "normalTexture": {
+                            "index": 1
+                        },
+                        "pbrMetallicRoughness": {
+                            "baseColorFactor": [
+                                0.800000011920929,
+                                0.800000011920929,
+                                0.800000011920929,
+                                1
+                            ],
+                            "baseColorTexture": {
+                                "index": 0
+                            },
+                            "metallicFactor": 0.9,
+                            "roughnessFactor": 0.5
+                        }
+                    }
+                }
+            ],
             "traits": [
                 {
                     "name": "Hats",

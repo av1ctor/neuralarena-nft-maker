@@ -27,6 +27,18 @@ impl ModelExporter {
                 },
             };
 
+            let images = gltf.get_mut("images")
+                .expect("images[] not found").as_array_mut().unwrap();
+            images.clear();
+            for image in &model.material.cfg.images {
+                images.push(serde_json::to_value(image).unwrap());
+            }
+            
+            let materials = gltf.get_mut("materials")
+                .expect("materials[] not found").as_array_mut().unwrap();
+            materials.clear();
+            materials.push(serde_json::to_value(&model.material.cfg.definition).unwrap());
+
             for tr4it in &model.traits {
                 let trait_path = &format!("{}traits/{}", model.cfg.path, tr4it.cfg.path);
                 let trait_full_path = &format!("{}{}", trait_path, tr4it.cfg.gltf);

@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-
 use crate::model::Model;
 use neuralarena_cdk::models::nas1_types::Nas1Token;
 
@@ -10,10 +9,11 @@ impl PropsExporter {
         models: &Vec<Model>
     ) -> Result<(), String> {
         for model in models {
+            // FIXME: this should be defined in the config file
             let mut prop = Nas1Token {
                 model: model.name.clone(),
                 name: format!("Brains #{:0>5}", model.num),
-                xp: model.cfg.xp,
+                game_props: HashMap::new(),
                 height: model.cfg.height,
                 radius: model.cfg.radius,
                 traits: vec![],
@@ -22,6 +22,7 @@ impl PropsExporter {
                 hidden_layers_weights_size: vec![32],
                 image_url: "".to_string(),
                 model_url: "".to_string(),
+                sfx_set: 0,
                 steps_per_thought: 1000,
                 extra: HashMap::default(),
             };

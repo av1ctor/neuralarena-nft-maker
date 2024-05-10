@@ -93,15 +93,12 @@ function add_lights() {
 
         const geometry = new THREE.BoxGeometry( 3.0, 3.0, 3.0 );
         const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-        const cube = new THREE.Mesh( geometry, material );
-        state.scene.add( cube );
 
+        // FIXME: this should be defined in the config file
         const camera = new THREE.PerspectiveCamera(75.0, w / h, 0.1, 1000);
         camera.position.set(0.0, 180.0, 60.0);
 
         function render() {
-            cube.rotateX(0.01);
-            cube.rotateY(0.01);
             renderer.render(state.scene!, camera);
 
             if(state.render) {

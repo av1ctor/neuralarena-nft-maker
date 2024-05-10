@@ -28,15 +28,51 @@ pub struct ModelArmature {
 }
 
 #[derive(Clone, Default, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ModelMaterialImage {
+    pub uri: String,
+    pub mime_type: String,
+}
+
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
+pub struct ModelMaterialTexture {
+    pub index: usize,
+}
+
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ModelMaterialPbrMetallicRoughness {
+    pub base_color_factor: Vec<f32>,
+    pub base_color_texture: ModelMaterialTexture,
+    pub metallic_factor: f32,
+    pub roughness_factor: f32,
+}
+
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ModelMaterialDefinition {
+    pub name: String,
+    pub normal_texture: ModelMaterialTexture,
+    pub pbr_metallic_roughness: ModelMaterialPbrMetallicRoughness,
+}
+
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
+pub struct ModelMaterialConfig {
+    pub probability: f32,
+    pub images: Vec<ModelMaterialImage>,
+    pub definition: ModelMaterialDefinition,
+}
+
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct ModelConfig {
     pub name: String,
-    pub xp: usize,
     pub height: f32,
     pub radius: f32,
     pub path: String,
     pub probability: f32,
     pub gltf: String,
     pub armature: ModelArmature,
+    pub materials: Vec<ModelMaterialConfig>,
     pub traits: Vec<ModelTraitGroupConfig>,
 }
 
