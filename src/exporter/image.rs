@@ -8,7 +8,7 @@ use tao::{
     window::WindowBuilder
 };
 use wry::{PageLoadEvent, WebViewBuilder};
-use crate::model::Model;
+use crate::{config::ModelSceneConfig, model::Model};
 
 const HTML: &str = include_str!("../../js/dist/index.html");
 
@@ -44,24 +44,28 @@ impl ImageExporter {
             .unwrap();
 
         let proxy1 = event_loop.create_proxy();
+        let scenes = vec![models[0].cfg.scene.clone()];
         let page_load_handler = move |event, _msg| {
             match event {
                 PageLoadEvent::Finished => {
+                    let scene_cfg = Self::get_scene_config(&scenes[0]);
                     let gltf = Self::load_gltf(0);
-                    _ = proxy1.send_event(UserEvent::Eval(format!("window.app.begin('{}');", gltf)));
+                    _ = proxy1.send_event(UserEvent::Eval(format!("window.app.begin('{}', '{}');", gltf, scene_cfg)));
                 },
                 _ => ()
             }
         };
 
         let proxy2 = event_loop.create_proxy();
+        let scenes = models.iter().map(|m| m.cfg.scene.clone()).collect::<Vec<_>>();
         let ipc_handler = move |msg: String| {
             match serde_json::from_str::<RpcCommand>(&msg).unwrap() {
                 RpcCommand::SaveJpeg { num, image } => {
                     Self::save_jpeg(num, &image);
                     if num+1 < len_models {
+                        let scene_cfg = Self::get_scene_config(&scenes[num+1]);
                         let gltf = Self::load_gltf(num+1);
-                        _ = proxy2.send_event(UserEvent::Eval(format!("window.app.next('{}');", gltf)));
+                        _ = proxy2.send_event(UserEvent::Eval(format!("window.app.next('{}', '{}');", gltf, scene_cfg)));
                     }
                     else {
                         _ = proxy2.send_event(UserEvent::Shutdown);
@@ -98,6 +102,12 @@ impl ImageExporter {
                 _ => (),
             }
         });
+    }
+
+    fn get_scene_config(
+        scene: &ModelSceneConfig
+    ) -> String {
+        serde_json::to_string(scene).unwrap()
     }
 
     fn load_gltf(

@@ -4,23 +4,37 @@ import { decode } from 'js-base64';
 
 const loader = new GLTFLoader();
 
+type SceneCameraConfig = {
+    position: THREE.Vector3;
+};
+
+type SceneConfig = {
+    camera: SceneCameraConfig;
+};
+
 interface State {
     num: number,
     render: boolean,
     scene?: THREE.Scene,
+    camera?: THREE.PerspectiveCamera,
 }
 
 let state: State = {
     num: 0,
     render: false,
     scene: undefined,
+    camera: undefined,
 };
 
-function call_ipc(data: any) {
+function call_ipc(
+    data: any
+) {
     (window as any).ipc.postMessage(JSON.stringify(data));
 }
 
-function load_gltf(text: string): Promise<void> {
+function load_gltf(
+    text: string
+): Promise<void> {
     return new Promise((resolve, reject) => {
         const gltf = JSON.parse(decode(text));
         loader.parse(
@@ -47,14 +61,24 @@ function load_gltf(text: string): Promise<void> {
     });
 }
 
+function setup_scene(
+    cfg: SceneConfig
+) {
+    state.camera!.position.set(
+        cfg.camera.position.x,
+        cfg.camera.position.y,
+        cfg.camera.position.z,
+    );
+}
+
 function add_lights() {
     if(state.scene) {
         const fillLight1 = new THREE.HemisphereLight(0xffffff, 0x444444, 2.0);
-        fillLight1.position.set(0, 300, 0);
+        fillLight1.position.set(0.0, 300.0, 0.0);
         state.scene.add(fillLight1);
 
         const directionalLight = new THREE.DirectionalLight(0xffffff, 7.0);
-        directionalLight.position.set(15, 30, 10);
+        directionalLight.position.set(15.0, 30.0, 1.00);
         directionalLight.castShadow = true;
         directionalLight.shadow.camera.near = 0.01;
         directionalLight.shadow.camera.far = 500.0;
@@ -64,7 +88,7 @@ function add_lights() {
         directionalLight.shadow.camera.bottom = -60.0;
         directionalLight.shadow.mapSize.width = 2048;
         directionalLight.shadow.mapSize.height = 2048;
-        directionalLight.shadow.radius = 4;
+        directionalLight.shadow.radius = 4.0;
         directionalLight.shadow.bias = -0.00006;
         state.scene.add(directionalLight);
     }
@@ -91,15 +115,11 @@ function add_lights() {
 
         add_lights();
 
-        const geometry = new THREE.BoxGeometry( 3.0, 3.0, 3.0 );
-        const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-
-        // FIXME: this should be defined in the config file
-        const camera = new THREE.PerspectiveCamera(75.0, w / h, 0.1, 1000);
-        camera.position.set(0.0, 180.0, 60.0);
+        state.camera = new THREE.PerspectiveCamera(75.0, w / h, 0.1, 1000.0);
+        state.camera.position.set(0.0, 180.0, 60.0);
 
         function render() {
-            renderer.render(state.scene!, camera);
+            renderer.render(state.scene!, state.camera!);
 
             if(state.render) {
                 state.render = false;
@@ -118,7 +138,10 @@ function add_lights() {
 
         window.requestAnimationFrame(render);
     },
-    begin: (gltf: string) => {
+    
+    begin: (gltf: string, cfg: string) => {
+        setup_scene(JSON.parse(cfg) as SceneConfig);
+        
         load_gltf(gltf).then(() => {
             state.num = 0;
             state.render = true;
@@ -126,7 +149,10 @@ function add_lights() {
             console.error(err);
         });
     },
-    next: (gltf: string) => {
+
+    next: (gltf: string, cfg: string) => {
+        setup_scene(JSON.parse(cfg) as SceneConfig);
+
         load_gltf(gltf).then(() => {
             state.num += 1;
             state.render = true;

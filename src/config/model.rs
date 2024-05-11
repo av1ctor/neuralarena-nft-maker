@@ -64,6 +64,16 @@ pub struct ModelMaterialConfig {
 }
 
 #[derive(Clone, Default, Debug, Serialize, Deserialize)]
+pub struct ModelSceneCameraConfig {
+    pub position: Vector3,
+}
+
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
+pub struct ModelSceneConfig {
+    pub camera: ModelSceneCameraConfig,
+}
+
+#[derive(Clone, Default, Debug, Serialize, Deserialize)]
 pub struct ModelConfig {
     pub name: String,
     pub height: f32,
@@ -71,6 +81,7 @@ pub struct ModelConfig {
     pub path: String,
     pub probability: f32,
     pub gltf: String,
+    pub scene: ModelSceneConfig,
     pub armature: ModelArmature,
     pub materials: Vec<ModelMaterialConfig>,
     pub traits: Vec<ModelTraitGroupConfig>,
